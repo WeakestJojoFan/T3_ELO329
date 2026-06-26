@@ -27,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Territory.h
         Cellular.cpp Cellular.h Equipo.cpp Equipo.h
         TerritoryView.cpp TerritoryView.h
+        CellularView.cpp CellularView.h
 
 
     )
