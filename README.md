@@ -13,17 +13,17 @@
 | Yasin Morales | Desarrollador |
 | Martin Pérez| Desarrollador |
 
-##Descripción
+## Descripción
 
 Simulador gráfico en C++ y Qt de dispositivos de rastreo tipo AirTag (EloTelTag), celulares y tablets.
 
 ---
 
-#Estructura del repositiorio
+## Estructura del repositiorio
 
 ```
 Tarea2_elo/
-├── Stage1/	Stage1: Abre una ventana de dialogo para elegir el archivo de configuración, meustra posición inicial de los celulares.
+├── Stage1/	Stage1: Abre una ventana de dialogo para elegir el archivo de configuración, muestra posición inicial de los celulares.
 └── resources/	Recursos de la simulación (archivo config.txt, imágen de fondo).
 ```
 
