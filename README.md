@@ -1,4 +1,4 @@
-"# Tarea 3: Simulador Gráfico en C++ y Qt de EloTelTags y Aplicación Find My"
+# Tarea 3: Simulador Gráfico en C++ y Qt de EloTelTags y Aplicación Find My
 
 **Ramo:** ELO329 – Diseño y Programación Orientados a Objetos  
 **Semestre:** 1er semestre 2026
