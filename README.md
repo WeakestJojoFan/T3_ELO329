@@ -25,8 +25,8 @@ Simulador gráfico en C++ y Qt de dispositivos de rastreo tipo AirTag (EloTelTag
 Tarea2_elo/
 ├── Stage1/	Stage1: Abre una ventana de dialogo para elegir el archivo de configuración, muestra posición inicial de los celulares.
 ├── Stage2/	Stage2: Agrega Tablets y EloTelTag, los dispositivos se mueven por el mapa.
-├── Stage3/	Stage3: Agrega ETNube y ventana FindMy. Tablets y tags muestran señal de radar. Se reporta posiciones a la nube. FindMy muestra los datos de la nube para un usuario, y permite hacer seguimiento del camino recorrido por sus dispositivos.
-├── Stage4/	Stage4: Incorpora opción GFindMy del menú contextual, muestra una vista del territorio con los dispositivos en su última posición reportada.
+├── Stage3/	Stage3: Agrega ETNube y ventana FindMy. Tablets y tags muestran señal de radar. Se reporta posiciones a la nube. FindMy muestra los datos de la nube para un usuario (posición de sus dispositivos).
+├── Stage4/	Stage4: Incorpora opción GFindMy del menú contextual, muestra una vista del territorio con los dispositivos en su última posición reportada. FindMy se actualiza con los últimos datos disponibles, y permite hacer seguimiento del camino recorrido por sus dispositivos.
 └── resources/	Recursos de la simulación (archivo config.txt, imágen de fondo).
 ```
 Cada etapa contiene:
