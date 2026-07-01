@@ -43,7 +43,7 @@ Cada etapa contiene:
 
 # Compilación y ejecución
 
-Cargar el proyecto Qt, cuando se pregunte seleccionar "Configurar proyecto" y usar la opción **BUILD** y **RUN**.
+Cargar el proyecto Qt, cuando se pregunte por los kits seleccionar "Configurar proyecto", usar la opción **BUILD** y **RUN**.
 
 Al ejecutar se abrirá un FileChooser para seleccionar el archivo `config.txt`.
 
