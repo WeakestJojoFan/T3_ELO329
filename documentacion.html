@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentación Tarea 3</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: 'loose',
+      useMaxWidth: false,
+      theme: 'default',
+      themeVariables: {
+        fontSize: '13px',
+        titleFontSize: '14px',
+        labelFontSize: '11px',
+      },
+      class: { 
+        useMaxWidth: false,
+        nodeSpacing: 25, 
+        rankSpacing: 45, 
+        padding: 8 
+      },
+      themeCSS: `
+        g.classGroup text { 
+          font-family: Arial, sans-serif !important; 
+          font-size: 13px !important; 
+        }
+        g.classGroup .title-text {
+          font-weight: bold !important;
+          font-size: 14px !important;
+        }
+      `
+    });
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 95%; margin: 20px auto; padding: 0 10px; color: #222; }
+    h1 { color: #1a3a6b; border-bottom: 2px solid #1a3a6b; padding-bottom: 8px; font-size: 1.8em; }
+    h2 { color: #2c5f9e; margin-top: 36px; }
+    h3 { color: #444; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+    th { background: #1a3a6b; color: white; padding: 8px 12px; text-align: left; }
+    td { border: 1px solid #ccc; padding: 8px 12px; vertical-align: top; }
+    tr:nth-child(even) { background: #f4f7fc; }
+    code { background: #eef; padding: 2px 6px; border-radius: 3px; font-size: 0.92em; }
+    .badge { display: inline-block; background: #2c5f9e; color: white; border-radius: 4px; padding: 2px 8px; font-size: 0.82em; margin-left: 6px; }
+    .note { background: #fffbe6; border-left: 4px solid #f0b429; padding: 10px 16px; margin: 12px 0; border-radius: 4px; }
+
+    .mermaid-container {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border: 1px solid #dde;
+      border-radius: 8px;
+      background: #fafbff;
+      padding: 15px;
+      margin: 16px 0;
+    }
+    .mermaid svg { 
+      min-width: 1300px !important;
+      height: auto !important;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tarea 3 – Simulador Gráfico EloTelTag <span class="badge">Etapa 4 (Final)</span></h1>
+<p><strong>Ramo:</strong> ELO329 – Diseño y Programación Orientados a Objetos &nbsp;|&nbsp; <strong>Semestre:</strong> 1er semestre 2026</p>
+<p><strong>Integrantes:</strong> Carlos Ramírez, Nicolás King, Yasin Morales, Martin Pérez</p>
+
+<h2>1. Diagrama de Clases</h2>
+
+  <div class="mermaid-container">
+    <div class="mermaid">
+classDiagram
+    %% Cambiado a LR para que en pantallas bajas se extienda hacia el lado 
+    %% de forma natural y puedas leer haciendo scroll lateral interactivo.
+    direction LR
+
+    class Equipo {
+        #QString m_name
+        #QString m_itemName
+        #double m_x
+        #double m_y
+        #double m_speed
+        #double m_angle
+        #double m_deltaAngle
+        #bool m_trackingActive
+        #List~PointF~ m_history
+        +Equipo(name, x, y, speed, angle, deltaAngle)
+        +updatePosition(deltaTime) void
+        +reboteX() void
+        +reboteY() void
+        +setTracking(active) void
+    }
+
+    class Cellular {
+        -ETNube* m_cloud
+        -double m_reportTime
+        -double m_timeSinceLastReport
+        +updatePosition(double deltaTime) void
+        +reportPosition() void
+        +reportItemPos(Equipo* device) void
+    }
+
+    class EquipoPasivo {
+        #double m_timeSinceLastScan
+        #double m_bipTime
+        +findNearbyPhone(const QVector~Cellular*~& cells) void
+
+        +signal scanAnimation() void
+    }
+
+    class EloTelTag {
+        +EloTelTag(QString name, QString itemName, double x, double y, double speed, etc)
+    }
+
+    class Tablet {
+        +Tablet(QString name, double x, double y, etc)
+    }
+
+    class Territory {
+        -QVector~Cellular*~ m_cellulars
+        -QVector~Tablet*~ m_tablets
+        -QVector~EloTelTag*~ m_tags
+        -ETNube* m_cloud
+        +stepSim() void
+    }
+
+    class ETNube {
+        -QMap~QString, QMap~QString, QPointF~~ m_tagData
+        -QMap~QString, QMap~QString, QPointF~~ m_smartDeviceData
+        +uploadData(user, itemName, isTag, x, y) void
+        +downloadData() pair
+        +downloadAllData() pair
+    }
+
+    class SmartDeviceView {
+        #Equipo* m_model
+        #ETNube* m_cloud
+        #QColor m_brushColor
+        #int m_radioScan
+        #paintEvent() void
+    }
+
+    class CellularView {
+        +CellularView(Cellular* model, ETNube* cloud, QWidget* parent)
+    }
+
+    class EloTelTagView {
+        +EloTelTagView(EloTelTag* model, QWidget* parent)
+    }
+
+    class TabletView {
+        +TabletView(Tablet* model, ETNube* cloud, QWidget* parent)
+    }
+
+    class TerritoryView {
+        -Territory* m_model
+        -ETNube* m_cloud
+        +updateView() void
+        +signal updateData()
+    }
+
+    class VentanaFindMy {
+        -ETNube* m_cloud
+        -TerritoryView* m_map
+    }
+
+    class gFindMy {
+        -ETNube* m_cloud
+    }
+
+    class LienzoMapa {
+        -ETNube* m_cloud
+    }
+
+    class MainWindow {
+        -Territory* m_model
+        -TerritoryView* m_territoryView
+        -QTimer* m_timer
+    }
+
+    Equipo <|-- EquipoPasivo
+    Equipo <|-- Cellular
+    EquipoPasivo <|-- Tablet
+    EquipoPasivo <|-- EloTelTag
+
+    SmartDeviceView <|-- CellularView
+    SmartDeviceView <|-- TabletView
+    SmartDeviceView <|-- EloTelTagView
+
+    TabletView ..> VentanaFindMy : Abre
+    CellularView ..> VentanaFindMy : Abre
+    Cellular ..> ETNube : Reporta
+    LienzoMapa ..> ETNube : Consulta
+    VentanaFindMy ..> ETNube : Consulta
+    EquipoPasivo ..> Cellular : Busca
+    
+    MainWindow --> Territory : Controla
+    MainWindow --> TerritoryView : Muestra
+    MainWindow --> gFindMy : Crea
+
+    gFindMy --> LienzoMapa : Muestra
+
+    Territory --> Equipo : Contiene
+    Territory --> ETNube : Contiene
+    TerritoryView --> SmartDeviceView : Contiene
+
+    </div>
+  </div>
+
+<h2>2. Arquitectura MVC</h2>
+<p>El proyecto sigue el patrón <strong>Modelo–Vista–Controlador</strong>:</p>
+<table>
+  <tr><th>Capa</th><th>Clases</th><th>Responsabilidad</th></tr>
+  <tr>
+    <td><strong>Modelo</strong></td>
+    <td><code>Equipo</code>, <code>Cellular</code>, <code>EloTelTag</code>, <code>Tablet</code>, <code>ETNube</code>, <code>Territory</code></td>
+    <td>Almacenan datos y lógica. Las funciones <code>reboteX()</code> y <code>reboteY()</code> permiten a <code>Territory</code> controlar que no salgan del área de simulación.</td>
+  </tr>
+  <tr>
+    <td><strong>Vista</strong></td>
+    <td><code>CellularView</code>, <code>EloTelTagView</code>, <code>TabletView</code>, <code>TerritoryView</code>, <code>FindMyWindow</code></td>
+    <td>Renderizan cada dispositivo usando QPainter. <code>TerritoryView</code> llama <code>updatePosition()</code> de cada <code>SmartDeviceView</code>.</td>
+  </tr>
+  <tr>
+    <td><strong>Controlador</strong></td>
+    <td><code>MainWindow</code></td>
+    <td>Reacciona a eventos (Play/Pause/GFindMy) y coordina los pasos de la simulación y vista.</td>
+  </tr>
+</table>
+
+<h2>3. Descripción de Clases</h2>
+
+<h3>Equipo</h3>
+<p>Clase base para <code>Cellular</code> y <code>EquipoPasivo</code>. Guarda el nombre de su dueño, y el tipo de dispositivo/item. Mediante <code>updatePosition()</code> actualiza su posición. Cuando se llama <code>reboteX</code> o <code>reboteY</code> refleja el angulo actual respecto al eje correspondiente. El movimiento sigue un modelo <strong>polar</strong>: en cada paso el ángulo varía entre el rango <code>[-deltaAngle, +deltaAngle]</code> y avanza <code>Speed * dTime</code> píxeles. Además almacena en una <code>QList</code> sus posiciones si <code>m_trackingActive</code> esta puesto como <code>true</code></p>
+
+<h3>EquipoPasivo</h3>
+<p>Clase base para <code>Tablet</code> y <code>EloTelTag</code>. Agrega la capacidad de buscar celulares cercanos mediante <code>findNearbyPhone()</code> y le solicita reportar su ubicación a la nube. Agrega la señal <code>scanAnimation()</code> la cuál es escuchada por <code>smartDeviceView</code> para emitir el efecto de escaneo.</p>
+
+<h3>Cellular</h3>
+<p>Hereda <code>Equipo</code> con nombre fijo "Telefono". Mantiene referencia a <code>ETNube</code>. Reporta su propia posición cada 4 segundos <code>reportLocation()</code> y la posición aproximada (posición propia del celular) de tags/tablets cercanos mediante <code>reportItemPos(Equipo* device)</code>.</p>
+
+<h3>EloTelTag</h3>
+<p>Hereda <code>EquipoPasivo</code>. Añade un nombre propio (p.ej. "maleta"). Busca celulares cada 4 segundos.</p>
+
+<h3>Tablet</h3>
+<p>Hereda <code>EquipoPasivo</code> con nombre fijo "Tablet". Busca celulares cada 5 segundos.</p>
+
+<h3>ETNube</h3>
+<p>Almacena dos <code>QMap</code> para guardar por usuario las posiciones de los dispositivos y tags. <code>downloadData(QString usuario)</code> entrega un par de QMap de la información disponible para un usuario en específico. <code>downloadAllData</code> entrega los dos QMap de posiciones disponibles</p>
+
+<h3>Territory</h3>
+<p>Modelo de la simulación. Contiene todos los equipos en un <code>QVector</code> para cada tipo(Cellulars, Tablets, Tags). Si detecta que un equipo está fuera de los margenes de la simulación, llama su función rebote correspondiente.</p>
+
+<h3>TerritoryView</h3>
+<p>Hereda <code>QWidget</code>. Contiene un <code>QPixMap</code> con la imagen de fondo la cual dibuja mediante <code>QPainter</code>, y contiene las vistas de los dispositivos. Propaga el llamado a actualizar las vistas cuando se llama <code>updateView()</code> desde <code>MainWindow</code>.</p>
+
+<h3>SmartDeviceView</h3>
+<p>Hereda <code>QWidget</code>. Es la clase base para cada vista. Modifica el <code>PaintEvent</code> y dibuja según el tipo de dispositivo definido en la clase hija. Si el modelo que recibe se puede castear como <code>EquipoPasivo</code>, conecta la señal <code>scanAnimation()</code> a la función encargada de dibujar el efecto de escaneo.</p>
+
+<h3>CellularView / EloTelTagView / TabletView</h3>
+<p>Vistas de cada dispositivo que heredan de <code>SmartDeviceView</code>. Definen los colores, dimensiones y forma a usar en el <code>PaintEvent</code>. CellularView y Tablet incluyen el menú contextual con "Find My".</p>
+
+<h3>FindMyWindow</h3>
+<p>Hereda de <code>QDialog</code>. Creada como hija de <code>TerritoryView</code>. Ventana flotante que muestra los bienes de una persona. Se actualiza cada segundo cuando recibe la señal <code>updateData()</code> desde <code>TerritoryView</code> solicitando los datos a <code>ETNube</code>. Añade botones para hacer seguimiento a los dispositivos del usuario, estén o no en la nube. Al hacer seguimiento llama <code>setTracking(bool)</code> del equipo correspondiente.</p>
+
+<h3>gFindMy</h3>
+<p>Hereda de <code>QDialog</code>. Creada por <code>MainWindow</code>. Crea un <code>LienzoMapa</code> como hijo.</p>
+
+<h3>LienzoMapa</h3>
+<p>Hereda de <code>QWidget</code>. Muestra una vista del mapa con los dispositivos en su ultima posición reportada en el mapa. Actualiza los datos de posiciones cada un segundo desde <code>ETNube</code> al recibir la señal <code>updateData()</code> de <code>TerritoryView</code>.</p>
+
+<h2>3. Dificultades en el proceso de elaboración de la tarea</h2>
+
+<p>Se encontró dificultad al implementar ciertas funciones de algunas clases, debido a esto se estimó conveniente crear clases intermedias como <code>EquipoPasivo</code> o <code>SmartDeviceView</code>, lo que evitó tener que repetir código entre varias clases.</p>
+
+<p>Otra dificultad fué que los Tags evitaban la interacción con los tablets y celulares al intentar abrir el menú contextual <code>FindMy</code>, cuando estos se encontraban pasando por encima. Para solucionar esto se hizo que los Tags cambien la propiedad <code>Qt::WA_TransparentForMouseEvents</code> a <code>true</code>. Además se intentó hacer un manejo adecuado de los eventos que no caen dentro del dibujo del dispositivo, para que este pase a otros dispositivos que puedan estar detras.</p>
+
+</body>
+</html>
